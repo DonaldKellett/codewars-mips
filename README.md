@@ -26,6 +26,12 @@ $ ./bin/run pascal
 - `tag-collision`: Example of two functions with the same name in different files, leading to an error
 - `pascal`: Example of computing Pascal's triangle using a `factorial` function preloaded for the solver
 
+## Building
+
+```bash
+$ docker build -t ghcr.io/codewars/mips:latest .
+```
+
 ## License
 
 [MIT](./LICENSE)
