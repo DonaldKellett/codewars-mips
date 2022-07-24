@@ -5,10 +5,14 @@ if [ -z "${CONTAINER_ENGINE:+x}" ]; then
   CONTAINER_ENGINE=docker
 fi
 
+if [ -z "${IMAGE_TAG:+x}" ]; then
+  IMAGE_TAG=ghcr.io/codewars/mips:latest
+fi
+
 W=/workspace
 
 # Create container
-C=$($CONTAINER_ENGINE container create --rm -w $W ghcr.io/codewars/mips:latest sh -c "/usr/local/bin/mars nc p SolutionTest.asm 2> /dev/null")
+C=$($CONTAINER_ENGINE container create --rm -w $W $IMAGE_TAG sh -c "/usr/local/bin/mars nc p SolutionTest.asm 2> /dev/null")
 
 # Copy files from the current directory
 # example/Solution.asm
