@@ -89,7 +89,7 @@ __CW_FAIL:
 
 # assert(int condition, "Message to display for failing assertion")
 __CW_ASSERT:
-	beq $a0, $zero, cw_assert_failed
+	beq $a0, $zero, __CW_ASSERT_FAILED
 	addi $sp, $sp, -4
 	sw $ra, 0($sp)
 	la $a0, __CW_PASS_MSG
@@ -97,11 +97,48 @@ __CW_ASSERT:
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
 	jr $ra
-cw_assert_failed:
+__CW_ASSERT_FAILED:
 	addi $sp, $sp, -4
 	sw $ra, 0($sp)
 	add $a0, $a1, $zero
 	jal __CW_FAIL
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	jr $ra
+
+# assert_not(int condition, "Message to display for failing assertion")
+__CW_ASSERT_NOT:
+	bne $a0, $zero, __CW_ASSERT_NOT_FAILED
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	la $a0, __CW_PASS_MSG
+	jal __CW_PASS
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	jr $ra
+__CW_ASSERT_NOT_FAILED:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	add $a0, $a1, $zero
+	jal __CW_FAIL
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	jr $ra
+
+# assert_null(void *ptr, "Message to display for failing assertion")
+__CW_ASSERT_NULL:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	jal __CW_ASSERT_NOT
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	jr $ra
+
+# assert_not_null(void *ptr, "Message to display for failing assertion")
+__CW_ASSERT_NOT_NULL:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	jal __CW_ASSERT
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
 	jr $ra
