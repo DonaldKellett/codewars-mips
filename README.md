@@ -23,6 +23,7 @@ $ ./bin/run pascal
 ## Examples
 
 - `multiply` (default): Minimal example of `multiply` function and test cases
+- `multiply-failing`: Like `multiply`, but with a failing implementation
 - `label-collision`: Example of two functions with the same name in different files, leading to an error
 - `pascal`: Example of computing Pascal's triangle using a `factorial` function preloaded for the solver
 
