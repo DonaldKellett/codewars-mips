@@ -3,12 +3,12 @@
 
 .data
 
-describe: .asciiz "<DESCRIBE::>"
-completedin: .asciiz "<COMPLETEDIN::>"
-it: .asciiz "<IT::>"
-passed: .asciiz "<PASSED::>"
-failed: .asciiz "<FAILED::>"
-pass_msg: .asciiz "Test Passed"
+__CW_DESCRIBE: .asciiz "<DESCRIBE::>"
+__CW_COMPLETEDIN: .asciiz "<COMPLETEDIN::>"
+__CW_IT: .asciiz "<IT::>"
+__CW_PASSED: .asciiz "<PASSED::>"
+__CW_FAILED: .asciiz "<FAILED::>"
+__CW_PASS_MSG: .asciiz "Test Passed"
 
 .text
 .globl __CW_GROUP, __CW_ENDGROUP, __CW_TEST, __CW_PASS, __CW_FAIL, __CW_ASSERT
@@ -17,7 +17,7 @@ pass_msg: .asciiz "Test Passed"
 __CW_GROUP:
 	addi $sp, $sp, -4
 	sw $a0, 0($sp)
-	la $a0, describe
+	la $a0, __CW_DESCRIBE
 	li $v0, 4
 	syscall
 	lw $a0, 0($sp)
@@ -31,7 +31,7 @@ __CW_GROUP:
 
 # Ends a describe block
 __CW_ENDGROUP:
-	la $a0, completedin
+	la $a0, __CW_COMPLETEDIN
 	li $v0, 4
 	syscall
 	li $a0, 10
@@ -43,7 +43,7 @@ __CW_ENDGROUP:
 __CW_TEST:
 	addi $sp, $sp, -4
 	sw $a0, 0($sp)
-	la $a0, it
+	la $a0, __CW_IT
 	li $v0, 4
 	syscall
 	lw $a0, 0($sp)
@@ -59,7 +59,7 @@ __CW_TEST:
 __CW_PASS:
 	addi $sp, $sp, -4
 	sw $a0, 0($sp)
-	la $a0, passed
+	la $a0, __CW_PASSED
 	li $v0, 4
 	syscall
 	lw $a0, 0($sp)
@@ -75,7 +75,7 @@ __CW_PASS:
 __CW_FAIL:
 	addi $sp, $sp, -4
 	sw $a0, 0($sp)
-	la $a0, failed
+	la $a0, __CW_FAILED
 	li $v0, 4
 	syscall
 	lw $a0, 0($sp)
@@ -92,7 +92,7 @@ __CW_ASSERT:
 	beq $a0, $zero, cw_assert_failed
 	addi $sp, $sp, -4
 	sw $ra, 0($sp)
-	la $a0, pass_msg
+	la $a0, __CW_PASS_MSG
 	jal __CW_PASS
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
