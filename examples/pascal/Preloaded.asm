@@ -1,5 +1,6 @@
 .globl factorial
 
+# int factorial(int n)
 factorial:
 	ble $a0, $zero, base_case
 	addi $sp, $sp, -4

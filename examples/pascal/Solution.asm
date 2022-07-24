@@ -1,5 +1,7 @@
 .globl pascal
 
+# int pascal(int n, int r)
+# Computes n choose r
 pascal:
 	addi $sp, $sp, -4
 	sw $a1, 0($sp)
