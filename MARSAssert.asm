@@ -12,7 +12,7 @@ __CW_FAILED: .asciiz "<FAILED::>"
 __CW_PASS_MSG: .asciiz "Test Passed"
 
 .text
-.globl __CW_GROUP, __CW_ENDGROUP, __CW_TEST, __CW_PASS, __CW_FAIL, __CW_ASSERT, __CW_ASSERT_NOT, __CW_ASSERT_NULL, __CW_ASSERT_NOT_NULL, __CW_ASSERT_EQ, __CW_ASSERT_NEQ, __CW_ASSERT_LT, __CW_ASSERT_LEQ, __CW_ASSERT_GT, __CW_ASSERT_GEQ
+.globl __CW_GROUP, __CW_ENDGROUP, __CW_TEST, __CW_PASS, __CW_FAIL, __CW_ASSERT, __CW_ASSERT_NOT, __CW_ASSERT_NULL, __CW_ASSERT_NOT_NULL, __CW_ASSERT_EQ, __CW_ASSERT_NEQ, __CW_ASSERT_LT, __CW_ASSERT_LEQ, __CW_ASSERT_GT, __CW_ASSERT_GEQ, __CW_ASSERT_STR_EMPTY, __CW_ASSERT_STR_NOT_EMPTY, __CW_ASSERT_STR_EQ, __CW_ASSERT_STR_NEQ
 
 # describe("Major component or scenario")
 __CW_GROUP:
@@ -230,6 +230,125 @@ __CW_ASSERT_GEQ:
 	add $a0, $a1, $zero
 	add $a1, $t0, $zero
 	jal __CW_ASSERT_LEQ
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	jr $ra
+
+# assert_str_empty(const char *value, "Message to display for failing assertion")
+__CW_ASSERT_STR_EMPTY:
+	beq $a0, $zero, __CW_ASSERT_STR_EMPTY_FAILED
+	lb $t0, 0($a0)
+	bne $t0, $zero, __CW_ASSERT_STR_EMPTY_FAILED
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	la $a0, __CW_PASS_MSG
+	jal __CW_PASS
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	jr $ra
+__CW_ASSERT_STR_EMPTY_FAILED:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	add $a0, $a1, $zero
+	jal __CW_FAIL
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	jr $ra
+
+# assert_str_not_empty(const char *value, "Message to display for failing assertion")
+__CW_ASSERT_STR_NOT_EMPTY:
+	beq $a0, $zero, __CW_ASSERT_STR_NOT_EMPTY_FAILED
+	lb $t0, 0($a0)
+	beq $t0, $zero, __CW_ASSERT_STR_NOT_EMPTY_FAILED
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	la $a0, __CW_PASS_MSG
+	jal __CW_PASS
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	jr $ra
+__CW_ASSERT_STR_NOT_EMPTY_FAILED:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	add $a0, $a1, $zero
+	jal __CW_FAIL
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	jr $ra
+
+# assert_str_eq(const char *actual, const char *expected, "Message to display for failing assertion")
+__CW_ASSERT_STR_EQ:
+	beq $a0, $zero, __CW_ASSERT_STR_EQ_FAILED
+	beq $a1, $zero, __CW_ASSERT_STR_EQ_FAILED
+	lb $t0, 0($a0)
+	lb $t1, 0($a1)
+__CW_ASSERT_STR_EQ_LOOP:
+	beq $t0, $zero, __CW_ASSERT_STR_EQ_LOOP_END
+	beq $t1, $zero, __CW_ASSERT_STR_EQ_LOOP_END
+	bne $t0, $t1, __CW_ASSERT_STR_EQ_FAILED
+	addi $a0, $a0, 1
+	addi $a1, $a1, 1
+	lb $t0, 0($a0)
+	lb $t1, 0($a1)
+	j __CW_ASSERT_STR_EQ_LOOP
+__CW_ASSERT_STR_EQ_LOOP_END:
+	bne $t0, $zero, __CW_ASSERT_STR_EQ_FAILED
+	bne $t1, $zero, __CW_ASSERT_STR_EQ_FAILED
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	la $a0, __CW_PASS_MSG
+	jal __CW_PASS
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	jr $ra
+__CW_ASSERT_STR_EQ_FAILED:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	add $a0, $a2, $zero
+	jal __CW_FAIL
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	jr $ra
+
+# assert_str_neq(const char *actual, const char *unexpected, "Message to display for failing assertion")
+__CW_ASSERT_STR_NEQ:
+	beq $a0, $zero, __CW_ASSERT_STR_NEQ_FAILED
+	beq $a1, $zero, __CW_ASSERT_STR_NEQ_FAILED
+	add $t0, $zero, $zero
+	lb $t1, 0($a0)
+	lb $t2, 0($a1)
+__CW_ASSERT_STR_NEQ_LOOP:
+	beq $t1, $zero, __CW_ASSERT_STR_NEQ_LOOP_END
+	beq $t2, $zero, __CW_ASSERT_STR_NEQ_LOOP_END
+	beq $t1, $t2, __CW_ASSERT_STR_NEQ_COND_END
+	li $t0, 1
+	j __CW_ASSERT_STR_NEQ_LOOP_END
+__CW_ASSERT_STR_NEQ_COND_END:
+	addi $a0, $a0, 1
+	addi $a1, $a1, 1
+	lb $t1, 0($a0)
+	lb $t2, 0($a1)
+	j __CW_ASSERT_STR_NEQ_LOOP
+__CW_ASSERT_STR_NEQ_LOOP_END:
+	bne $t1, $zero, __CW_ASSERT_STR_NEQ_COND2
+	bne $t2, $zero, __CW_ASSERT_STR_NEQ_COND2
+	j __CW_ASSERT_STR_NEQ_COND2_END
+__CW_ASSERT_STR_NEQ_COND2:
+	li $t0, 1
+__CW_ASSERT_STR_NEQ_COND2_END:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	add $a0, $t0, $zero
+	add $a1, $a2, $zero
+	jal __CW_ASSERT
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	jr $ra
+__CW_ASSERT_STR_NEQ_FAILED:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	add $a0, $a2, $zero
+	jal __CW_FAIL
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
 	jr $ra
