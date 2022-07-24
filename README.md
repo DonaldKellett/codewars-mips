@@ -26,6 +26,7 @@ $ ./bin/run pascal
 - `multiply-failing`: Like `multiply`, but with a failing implementation
 - `label-collision`: Example of two functions with the same name in different files, leading to an error
 - `pascal`: Example of computing Pascal's triangle using a `factorial` function preloaded for the solver
+- `string-reverse`: Example of string reverse function and test cases
 
 ## Building
 
