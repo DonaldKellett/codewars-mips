@@ -29,6 +29,9 @@ jobs:
       - name: Run string-reverse example
         run: IMAGE_TAG=$IMAGE_NAME bin/run string-reverse
 
+      - name: Run array-reverse example
+        run: IMAGE_TAG=$IMAGE_NAME bin/run array-reverse
+
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
 
