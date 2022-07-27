@@ -1,7 +1,9 @@
 .data
 
 one_to_five: .word 1, 2, 3, 4, 5
+weird: .word 1, 2, 3, 4, 2, 1
 symmetric: .word 1, 2, 3, 2, 1
+singleton: .word 42
 some_numbers: .word 1, 7, 4, -3, 15, -90
 res: .word 0:6
 res_size: .word 0:1
@@ -24,11 +26,43 @@ li $a0, 10
 li $v0, 11
 syscall
 
+la $a0, weird
+li $a1, 6
+jal print_arr
+la $a0, weird
+li $a1, 6
+la $a2, res
+la $a3, res_size
+jal reverse
+la $a0, res
+la $a1, res_size
+lw $a1, 0($a1)
+jal print_arr
+li $a0, 10
+li $v0, 11
+syscall
+
 la $a0, symmetric
 li $a1, 5
 jal print_arr
 la $a0, symmetric
 li $a1, 5
+la $a2, res
+la $a3, res_size
+jal reverse
+la $a0, res
+la $a1, res_size
+lw $a1, 0($a1)
+jal print_arr
+li $a0, 10
+li $v0, 11
+syscall
+
+la $a0, singleton
+li $a1, 1
+jal print_arr
+la $a0, singleton
+li $a1, 1
 la $a2, res
 la $a3, res_size
 jal reverse
