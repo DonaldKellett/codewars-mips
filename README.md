@@ -28,6 +28,8 @@ $ ./bin/run pascal
 - `pascal`: Example of computing Pascal's triangle using a `factorial` function preloaded for the solver
 - `string-reverse`: Example of string reverse function and test cases
 - `string-reverse-failing`: Like `string-reverse`, but with a failing implementation
+- `array-reverse`: Example of array reverse function and test cases
+- `array-reverse-failing`: Like `array-reverse`, but with a failing implementation
 
 ## Building
 
