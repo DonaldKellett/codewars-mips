@@ -126,11 +126,11 @@ __CW_ASSERT_NOT_FAILED:
 	addi $sp, $sp, 4
 	jr $ra
 
-# assert_null(void *ptr, "Message to display for failing assertion")
+# assert_null(const void *ptr, "Message to display for failing assertion")
 __CW_ASSERT_NULL:
 	j __CW_ASSERT_NOT
 
-# assert_not_null(void *ptr, "Message to display for failing assertion")
+# assert_not_null(const void *ptr, "Message to display for failing assertion")
 __CW_ASSERT_NOT_NULL:
 	j __CW_ASSERT
 
